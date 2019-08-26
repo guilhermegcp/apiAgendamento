@@ -1,6 +1,7 @@
 package com.agendamento.model;
 
 import java.util.Date;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,8 +9,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 @Table
@@ -20,10 +25,13 @@ public class Atendimento {
 	@Column(name = "id_atendimento")
 	private Long id;
 	
-	@Column(name = "data_inicio")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "data_inicio",columnDefinition="DATE")
 	private Date data_inicio;
 	
-	@Column(name = "data_fim")
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "data_fim",columnDefinition="DATE")
 	private Date data_fim;
 	
 	@Column(name = "status_atendimento")
@@ -36,6 +44,14 @@ public class Atendimento {
 	@ManyToOne
 	@JoinColumn(name="id_manicure")
 	private Manicure manicure;
+	
+	@ManyToMany
+	@JoinTable(
+    name = "servico_atendimento", 
+	joinColumns = @JoinColumn(name = "id_atendimento"), 
+	inverseJoinColumns = @JoinColumn(name = "id_servico"))
+	Set<Servico> servico;
+ 
 	
 	public Long getId() {
 		return id;
@@ -84,8 +100,14 @@ public class Atendimento {
 	public void setManicure(Manicure manicure) {
 		this.manicure = manicure;
 	}
-	
-	
+
+	public Set<Servico> getServico() {
+		return servico;
+	}
+
+	public void setServico(Set<Servico> servico) {
+		this.servico = servico;
+	}
 	
 	
 }

@@ -1,10 +1,15 @@
 package com.agendamento.model;
 
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -27,7 +32,7 @@ public class Servico {
 	
 	@Column(name = "duracao")
 	private int duracao;
-
+	
 	public Long getId() {
 		return id;
 	}
@@ -67,6 +72,5 @@ public class Servico {
 	public void setDuracao(int duracao) {
 		this.duracao = duracao;
 	}
-	
-	
+
 }

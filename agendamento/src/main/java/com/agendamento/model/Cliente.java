@@ -1,16 +1,11 @@
 package com.agendamento.model;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -28,10 +23,6 @@ public class Cliente {
 	@Column(name = "id_facebook")
 	private String id_facebook;
 	
-	@OneToMany(fetch = FetchType.LAZY)
-	@JoinColumn(name = "id_cliente")
-	private List<Atendimento> atendimentos = new ArrayList<>();
-
 	public Long getId() {
 		return id;
 	}
@@ -56,13 +47,5 @@ public class Cliente {
 		this.id_facebook = id_facebook;
 	}
 
-	public List<Atendimento> getAtendimentos() {
-		return atendimentos;
-	}
-
-	public void setAtendimentos(List<Atendimento> atendimentos) {
-		this.atendimentos = atendimentos;
-	}
-	
 	
 }
