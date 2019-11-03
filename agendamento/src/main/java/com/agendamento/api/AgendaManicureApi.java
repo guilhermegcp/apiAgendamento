@@ -1,6 +1,8 @@
 //Classe com DTO
 package com.agendamento.api;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,9 +27,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.agendamento.dto.AgendaManicureDTO;
 import com.agendamento.model.AgendaManicure;
+import com.agendamento.model.Attachment;
+import com.agendamento.model.Buttons;
 import com.agendamento.model.Manicure;
+import com.agendamento.model.Messages;
+import com.agendamento.model.MessagesBtn;
+import com.agendamento.model.Payload;
+import com.agendamento.model.RetornoBtn;
+import com.agendamento.model.Text;
 import com.agendamento.repository.AgendaManicureRepository;
 import com.agendamento.repository.ManicureRepository;
+import com.google.gson.Gson;
 
 
 @RestController
@@ -139,5 +150,103 @@ public class AgendaManicureApi {
 		
 		return novaAgenda;	
 		
+	}
+	
+	@GetMapping(value = "/listarMsg")
+	public ResponseEntity<Messages> listaMsg() {
+
+		Gson gson = new Gson();
+
+		String msg = "{\"messages\": [{\"text\": \"Welcome to the Chatfuel Rockets!\"},{\"text\": \"What are you up to?\"}]}";
+
+		Messages m = gson.fromJson(msg, Messages.class);
+
+		Messages m2 = new Messages();
+
+		List<Text> lista = new ArrayList<>();
+
+		Text t1 = new Text();
+
+		t1.setText("Ola!");
+
+		lista.add(t1);
+
+		m2.setMessages(lista);
+
+		return ResponseEntity.ok(m2);
+	}
+	
+	@GetMapping(value = "/listarBtn")
+	public ResponseEntity<RetornoBtn> listaBtn() {
+
+		Gson gson = new Gson();
+
+		/*String msg = "{" + 
+				"  \"messages\": [" + 
+				"    {" + 
+				"      \"attachment\": {" + 
+				"        \"type\": \"template\"," + 
+				"        \"payload\": {" + 
+				"          \"template_type\": \"button\"," + 
+				"          \"text\": \"Hello!\"," + 
+				"          \"buttons\": [" + 
+				"            {" + 
+				"              \"type\": \"show_block\"," + 
+				"              \"block_names\": [\"name of block\"]," + 
+				"              \"title\": \"Show Block\"" + 
+				"            }," + 
+				"            {" + 
+				"              \"type\": \"web_url\"," + 
+				"              \"url\": \"https://rockets.chatfuel.com\"," + 
+				"              \"title\": \"Visit Website\"" + 
+				"            }," + 
+				"            {" + 
+				"              \"url\": \"https://rockets.chatfuel.com/api/welcome\"," + 
+				"              \"type\":\"json_plugin_url\"," + 
+				"              \"title\":\"Postback\"" + 
+				"            }" + 
+				"          ]" + 
+				"        }" + 
+				"      }" + 
+				"    }" + 
+				"  ]" + 
+				"}";
+
+		MessagesBtn m = gson.fromJson(msg, MessagesBtn.class);*/
+		
+		RetornoBtn rBtn = new RetornoBtn();
+		
+		List<MessagesBtn> listaMessagesBtn = new ArrayList<MessagesBtn>();
+		
+		MessagesBtn m = new MessagesBtn();
+
+		Attachment a1 = new Attachment();
+		
+		a1.setType("template");
+
+		Payload p1 = new Payload();
+		
+		p1.setTemplate_type("button");
+		
+		p1.setText("Hello!");
+		
+		List<Buttons> listaButtons = new ArrayList<>();
+		
+		List<String> blockNames = new ArrayList<String>();
+		blockNames.add("blockNames");
+		
+		listaButtons.add(new Buttons("show_block",blockNames,"Show Block",null));
+		
+		p1.setButtons(listaButtons);
+		
+		a1.setPayload(p1);
+		
+		m.setAttachment(a1);
+		
+		listaMessagesBtn.add(m);
+
+		rBtn.setMessages(listaMessagesBtn);
+
+		return ResponseEntity.ok(rBtn);
 	}
 }
