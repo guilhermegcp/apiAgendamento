@@ -1,6 +1,8 @@
-package com.agendamento.model;
+package com.agendamento.modelMessagesTxt;
 
 import java.util.List;
+
+import com.agendamento.modelMessagesBtn.Attachment;
 
 public class Messages {
 	

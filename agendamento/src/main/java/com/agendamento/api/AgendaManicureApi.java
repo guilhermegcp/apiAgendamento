@@ -27,16 +27,23 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.agendamento.dto.AgendaManicureDTO;
 import com.agendamento.model.AgendaManicure;
-import com.agendamento.model.Attachment;
-import com.agendamento.model.Buttons;
 import com.agendamento.model.Manicure;
-import com.agendamento.model.Messages;
-import com.agendamento.model.MessagesBtn;
-import com.agendamento.model.Payload;
-import com.agendamento.model.RetornoBtn;
-import com.agendamento.model.Text;
+import com.agendamento.model.Servico;
+import com.agendamento.modelMesagesQuick.Atributos;
+import com.agendamento.modelMesagesQuick.MessagesQuick;
+import com.agendamento.modelMesagesQuick.QuickReplie;
+import com.agendamento.modelMesagesQuick.QuickReplyOptions;
+import com.agendamento.modelMesagesQuick.RetornoQuick;
+import com.agendamento.modelMessagesBtn.Attachment;
+import com.agendamento.modelMessagesBtn.Buttons;
+import com.agendamento.modelMessagesBtn.MessagesBtn;
+import com.agendamento.modelMessagesBtn.Payload;
+import com.agendamento.modelMessagesBtn.RetornoBtn;
+import com.agendamento.modelMessagesTxt.Messages;
+import com.agendamento.modelMessagesTxt.Text;
 import com.agendamento.repository.AgendaManicureRepository;
 import com.agendamento.repository.ManicureRepository;
+import com.agendamento.repository.ServicoRepository;
 import com.google.gson.Gson;
 
 
@@ -47,6 +54,9 @@ public class AgendaManicureApi {
 	
 	@Autowired
 	private ManicureRepository manicureRepository;
+	
+	@Autowired
+	private ServicoRepository servicoRepository;
 	
 	@Autowired
 	private AgendaManicureRepository repository;
@@ -180,39 +190,6 @@ public class AgendaManicureApi {
 	public ResponseEntity<RetornoBtn> listaBtn() {
 
 		Gson gson = new Gson();
-
-		/*String msg = "{" + 
-				"  \"messages\": [" + 
-				"    {" + 
-				"      \"attachment\": {" + 
-				"        \"type\": \"template\"," + 
-				"        \"payload\": {" + 
-				"          \"template_type\": \"button\"," + 
-				"          \"text\": \"Hello!\"," + 
-				"          \"buttons\": [" + 
-				"            {" + 
-				"              \"type\": \"show_block\"," + 
-				"              \"block_names\": [\"name of block\"]," + 
-				"              \"title\": \"Show Block\"" + 
-				"            }," + 
-				"            {" + 
-				"              \"type\": \"web_url\"," + 
-				"              \"url\": \"https://rockets.chatfuel.com\"," + 
-				"              \"title\": \"Visit Website\"" + 
-				"            }," + 
-				"            {" + 
-				"              \"url\": \"https://rockets.chatfuel.com/api/welcome\"," + 
-				"              \"type\":\"json_plugin_url\"," + 
-				"              \"title\":\"Postback\"" + 
-				"            }" + 
-				"          ]" + 
-				"        }" + 
-				"      }" + 
-				"    }" + 
-				"  ]" + 
-				"}";
-
-		MessagesBtn m = gson.fromJson(msg, MessagesBtn.class);*/
 		
 		RetornoBtn rBtn = new RetornoBtn();
 		
@@ -248,5 +225,68 @@ public class AgendaManicureApi {
 		rBtn.setMessages(listaMessagesBtn);
 
 		return ResponseEntity.ok(rBtn);
+	}
+	
+	@GetMapping(value = "/listarQuick")
+	public ResponseEntity<RetornoQuick> listaQuick() {
+		
+		Gson gson = new Gson();
+		
+		RetornoQuick rq = new RetornoQuick();
+		
+		List<MessagesQuick> listaMessagesQuick = new ArrayList<MessagesQuick>();
+		
+		MessagesQuick mq = new MessagesQuick();
+		
+		mq.setText("Horarios disponiveis:");
+		
+		List<QuickReplie> listaQuickReplie = new ArrayList<QuickReplie>();
+		
+		//Manicure
+		Manicure manicure = this.manicureRepository.findAll().get(0);
+		
+		//Servico
+		Servico servico = this.servicoRepository.findAll().get(0);
+		
+		//Agenda Manicure
+		List<AgendaManicure> listaAgenda = repository.findAll();
+		List<AgendaManicureDTO> listaAgendaDTO = new ArrayList<>();
+		for(AgendaManicure agManicure : listaAgenda) {
+			listaAgendaDTO.add(this.converterAgendaParaDTO(agManicure));
+		}
+		
+		for(AgendaManicureDTO agendaDTO : listaAgendaDTO) {
+			QuickReplie qr = new QuickReplie();
+			String titulo = agendaDTO.getData_servico()+" às " +agendaDTO.getHora_inicio(); 
+			qr.setTitle(titulo);
+			
+			Atributos a = new Atributos();
+			a.setCodAgenda(agendaDTO.getId().toString());
+			a.setCodManicure(manicure.getId().toString());
+			a.setNomeManicure(manicure.getNome());
+			a.setCodServico(servico.getId().toString());
+			
+			qr.setSet_attributes(a);
+			listaQuickReplie.add(qr);
+			
+		}
+		
+		//Set a lista de resposta rapidas
+		mq.setQuick_replies(listaQuickReplie);
+		
+		//Opções 
+		QuickReplyOptions qro = new QuickReplyOptions();
+		qro.setProcess_text_by_ai(false);
+		qro.setText_attribute_name("user_message");
+		
+		//Set opções
+		mq.setQuick_reply_options(qro);
+		
+		listaMessagesQuick.add(mq);
+		
+		rq.setMessages(listaMessagesQuick);
+		
+		return ResponseEntity.ok(rq);
+		
 	}
 }

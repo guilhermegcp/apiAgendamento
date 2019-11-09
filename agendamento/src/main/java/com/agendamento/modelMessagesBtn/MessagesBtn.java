@@ -1,4 +1,4 @@
-package com.agendamento.model;
+package com.agendamento.modelMessagesBtn;
 
 public class MessagesBtn {
 	

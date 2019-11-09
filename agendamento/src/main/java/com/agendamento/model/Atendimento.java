@@ -1,6 +1,7 @@
 package com.agendamento.model;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -25,14 +26,14 @@ public class Atendimento {
 	@Column(name = "id_atendimento")
 	private Long id;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "data_inicio",columnDefinition="DATE")
-	private Date data_inicio;
+	@Column(name = "data_servico")  
+	private String data_servico;  
 	
+	@Column(name = "hora_inicio")
+	private String hora_inicio;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "data_fim",columnDefinition="DATE")
-	private Date data_fim;
+	@Column(name = "hora_fim")
+	private String hora_fim;
 	
 	@Column(name = "status_atendimento")
 	private char status;
@@ -50,7 +51,7 @@ public class Atendimento {
     name = "servico_atendimento", 
 	joinColumns = @JoinColumn(name = "id_atendimento"), 
 	inverseJoinColumns = @JoinColumn(name = "id_servico"))
-	Set<Servico> servico;
+	List<Servico> servico;
  
 	
 	public Long getId() {
@@ -61,20 +62,28 @@ public class Atendimento {
 		this.id = id;
 	}
 
-	public Date getData_inicio() {
-		return data_inicio;
+	public String getData_servico() {
+		return data_servico;
 	}
 
-	public void setData_inicio(Date data_inicio) {
-		this.data_inicio = data_inicio;
+	public void setData_servico(String data_servico) {
+		this.data_servico = data_servico;
 	}
 
-	public Date getData_fim() {
-		return data_fim;
+	public String getHora_inicio() {
+		return hora_inicio;
 	}
 
-	public void setData_fim(Date data_fim) {
-		this.data_fim = data_fim;
+	public void setHora_inicio(String hora_inicio) {
+		this.hora_inicio = hora_inicio;
+	}
+
+	public String getHora_fim() {
+		return hora_fim;
+	}
+
+	public void setHora_fim(String hora_fim) {
+		this.hora_fim = hora_fim;
 	}
 
 	public char getStatus() {
@@ -101,11 +110,11 @@ public class Atendimento {
 		this.manicure = manicure;
 	}
 
-	public Set<Servico> getServico() {
+	public List<Servico> getServico() {
 		return servico;
 	}
 
-	public void setServico(Set<Servico> servico) {
+	public void setServico(List<Servico> servico) {
 		this.servico = servico;
 	}
 	

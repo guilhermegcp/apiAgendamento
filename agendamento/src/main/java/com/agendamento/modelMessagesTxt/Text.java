@@ -1,4 +1,4 @@
-package com.agendamento.model;
+package com.agendamento.modelMessagesTxt;
 
 public class Text {
 	

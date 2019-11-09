@@ -1,5 +1,6 @@
 package com.agendamento.api;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,8 +20,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.agendamento.dto.AtendimentoDTO;
+import com.agendamento.model.AgendaManicure;
 import com.agendamento.model.Atendimento;
+import com.agendamento.model.Cliente;
+import com.agendamento.model.Manicure;
+import com.agendamento.model.Servico;
 import com.agendamento.repository.AtendimentoRepository;
+import com.agendamento.repository.ClienteRepository;
+import com.agendamento.repository.ManicureRepository;
+import com.agendamento.repository.ServicoRepository;
+import com.agendamento.repository.AgendaManicureRepository;
 
 @RestController
 @RequestMapping("/atendimento")
@@ -30,14 +40,26 @@ public class AtendimentoApi {
 	@Autowired
 	private AtendimentoRepository repository;
 	
+	@Autowired
+	private ManicureRepository manicureRepository;
+	
+	@Autowired
+	private ServicoRepository servicoRepository;
+	
+	@Autowired
+	private ClienteRepository clienteRepository;
+	
+	@Autowired
+	private AgendaManicureRepository AgendaManicureRepository;
+	
 	@GetMapping(value="/")
 	public ResponseEntity<String> verificaAtendimento(){
 		return ResponseEntity.status(HttpStatus.OK).body("Serviço Operacional");
 	}
 	
 	@PostMapping(value="/inserir")
-	public Atendimento adicionar(@Valid @RequestBody Atendimento atendimento) {
-		return repository.save(atendimento);
+	public Atendimento adicionar(@RequestBody AtendimentoDTO atendimentoDTO) {
+		return repository.save(this.converterDTOParaAtendimento(atendimentoDTO));
 	}
 	
 	@GetMapping(value="/listarTodos")
@@ -104,4 +126,55 @@ public class AtendimentoApi {
 		
 	}
 
+	private AtendimentoDTO converterAtendimentoParaDto(Atendimento atendimento) {
+		
+		AtendimentoDTO novoAtendimento = new AtendimentoDTO();
+		
+		novoAtendimento.setId(atendimento.getId());
+		novoAtendimento.setId_cliente(atendimento.getCliente().getId());
+		novoAtendimento.setId_manicure(atendimento.getManicure().getId());
+		novoAtendimento.setId_servico(atendimento.getServico().get(0).getId());
+		novoAtendimento.setStatus_atendimento(atendimento.getStatus());
+		novoAtendimento.setData_servico(atendimento.getData_servico());
+		novoAtendimento.setHora_fim(atendimento.getHora_fim());
+		novoAtendimento.setHora_inicio(atendimento.getHora_inicio());
+		
+		return novoAtendimento;
+	}
+	
+	private Atendimento converterDTOParaAtendimento (AtendimentoDTO atendimentoDTO) {
+		
+		Atendimento novoAtendimento = new Atendimento();
+		
+		novoAtendimento.setId(atendimentoDTO.getId());
+		novoAtendimento.setStatus(atendimentoDTO.getStatus_atendimento());
+		
+		if (atendimentoDTO.getId_agenda_manicure() == null ) {
+			novoAtendimento.setData_servico(atendimentoDTO.getData_servico());
+			novoAtendimento.setHora_fim(atendimentoDTO.getHora_fim());
+			novoAtendimento.setHora_inicio(atendimentoDTO.getHora_inicio());
+		}else {
+			AgendaManicure am = this.AgendaManicureRepository.findById(atendimentoDTO.getId_agenda_manicure()).get();
+			
+			novoAtendimento.setData_servico(am.getData_servico());
+			novoAtendimento.setHora_fim(am.getHora_fim());
+			novoAtendimento.setHora_inicio(am.getHora_inicio());
+			
+		}
+		
+		Manicure m = this.manicureRepository.findById(atendimentoDTO.getId_manicure()).get();
+		novoAtendimento.setManicure(m);
+		
+		//Cliente c = this.clienteRepository.findById(atendimentoDTO.getId_cliente()).get();
+		Cliente c = this.clienteRepository.findByIdFacebook(atendimentoDTO.getId_cliente().toString());
+		novoAtendimento.setCliente(c);
+		
+		List<Servico> listaS = new ArrayList<Servico>();
+		Servico s = this.servicoRepository.findById(atendimentoDTO.getId_servico()).get(); 
+		listaS.add(s);
+		novoAtendimento.setServico(listaS);
+		
+		return novoAtendimento;
+		
+	}
 }

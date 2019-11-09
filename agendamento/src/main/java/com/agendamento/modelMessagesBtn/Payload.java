@@ -1,4 +1,4 @@
-package com.agendamento.model;
+package com.agendamento.modelMessagesBtn;
 
 import java.util.List;
 
