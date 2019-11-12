@@ -138,6 +138,7 @@ public class AtendimentoApi {
 		novoAtendimento.setData_servico(atendimento.getData_servico());
 		novoAtendimento.setHora_fim(atendimento.getHora_fim());
 		novoAtendimento.setHora_inicio(atendimento.getHora_inicio());
+		novoAtendimento.setNome_manicure(atendimento.getManicure().getNome());
 		
 		return novoAtendimento;
 	}

@@ -18,6 +18,7 @@ public class AtendimentoDTO implements Serializable{
 	private String data_servico;  
 	private String hora_inicio;
 	private String hora_fim;
+	private String nome_manicure;
 	
 	public Long getId() {
 		return id;
@@ -73,5 +74,10 @@ public class AtendimentoDTO implements Serializable{
 	public void setId_agenda_manicure(Long id_agenda_manicure) {
 		this.id_agenda_manicure = id_agenda_manicure;
 	}
-	
+	public String getNome_manicure() {
+		return nome_manicure;
+	}
+	public void setNome_manicure(String nome_manicure) {
+		this.nome_manicure = nome_manicure;
+	}
 }

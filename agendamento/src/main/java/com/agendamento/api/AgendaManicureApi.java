@@ -265,6 +265,7 @@ public class AgendaManicureApi {
 			a.setCodManicure(manicure.getId().toString());
 			a.setNomeManicure(manicure.getNome());
 			a.setCodServico(servico.getId().toString());
+			a.setDscData(agendaDTO.getData_servico()+" às " +agendaDTO.getHora_inicio());
 			
 			qr.setSet_attributes(a);
 			listaQuickReplie.add(qr);

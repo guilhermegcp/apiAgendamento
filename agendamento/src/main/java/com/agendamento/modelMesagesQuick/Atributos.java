@@ -6,18 +6,20 @@ public class Atributos {
 	private String nomeManicure;
 	private String codAgenda;
 	private String codServico;
+	private String dscData;
 	
 	public Atributos() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Atributos(String codManicure, String nomeManicure, String codAgenda, String codServico) {
+	public Atributos(String codManicure, String nomeManicure, String codAgenda, String codServico, String dscData) {
 		super();
 		this.codManicure = codManicure;
 		this.nomeManicure = nomeManicure;
 		this.codAgenda = codAgenda;
 		this.codServico = codServico;
+		this.dscData = dscData;
 	}
 
 	public String getCodManicure() {
@@ -51,6 +53,13 @@ public class Atributos {
 	public void setCodServico(String codServico) {
 		this.codServico = codServico;
 	}
-	
+
+	public String getDscData() {
+		return dscData;
+	}
+
+	public void setDscData(String dscData) {
+		this.dscData = dscData;
+	}
 	
 }
